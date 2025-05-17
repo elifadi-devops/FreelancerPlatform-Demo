@@ -1,16 +1,11 @@
-# Ultra-simple pipeline that always works in free tier
-trigger: none  # Manual runs only
+trigger:
+- main
 
 pool:
-  vmImage: 'ubuntu-20.04'  # More stable than 'latest'
-  name: 'Azure Pipelines'  # Explicit free pool
+  vmImage: 'ubuntu-latest'
 
 steps:
 - script: |
-    echo "=== BASIC VALIDATION ==="
-    echo "This pipeline is designed to:"
-    echo "1. Bypass parallelism errors"
-    echo "2. Prove Azure DevOps is working"
-    echo "3. Prepare for next steps"
-    echo "Agent OS: $(uname -a)"
-  displayName: 'Free Tier Validation'
+    echo "Validating ARM templates..."
+    az --version
+  displayName: 'Validate setup'
