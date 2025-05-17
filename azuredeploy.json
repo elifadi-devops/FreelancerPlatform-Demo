@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "northeurope"
+    }
+  },
+  "resources": [
+            {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2022-03-01",
+      "name": "freelancer-asp",
+      "location": "[parameters('location')]",
+      "properties": {},
+      "sku": { "name": "B1", "tier": "Basic" }
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "freelancer-webapp",
+      "location": "[parameters('location')]",
+      "dependsOn": ["freelancer-asp"],
+      "properties": { "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', 'freelancer-asp')]" }
+    },
+    {
+      "type": "Microsoft.Sql/servers",
+      "apiVersion": "2014-04-01",
+      "name": "freelancer-sql",
+      "location": "[parameters('location')]",
+      "properties": {
+        "administratorLogin": "sqleliadmin850",
+        "administratorLoginPassword": "F22-23b@230"
+      }
+    },
+    {
+  "type": "Microsoft.ContainerInstance/containerGroups",
+  "apiVersion": "2023-05-01",  
+  "name": "freelancer-chat",
+  "location": "[parameters('location')]",
+  "properties": {
+    "containers": [
+      {
+        "name": "chat",
+        "properties": {
+          "environmentVariables": [
+  {
+    "name": "WELCOME_MESSAGE",
+    "value": "Hello Freelancers!"
+  }
+],
+          "image": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+          "ports": [{"port": 80}],
+          "resources": {
+            "requests": {
+              "cpu": 1,
+              "memoryInGB": 1.5
+            }
+          }
+        }
+      }
+    ],
+    "osType": "Linux",
+    "ipAddress": {
+      "type": "Public",
+      "ports": [{"port": 80, "protocol": "TCP"}],
+      "dnsNameLabel": "freelancer-chat"  
+    }
+  }
+}
+  ]
+}

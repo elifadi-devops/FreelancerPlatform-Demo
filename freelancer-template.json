@@ -1,0 +1,51 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "northeurope"
+    }
+  },
+  "variables": {
+    "containerGroupName": "freelancer-demo-container",
+    "dnsLabel": "freelancer-demo"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-10-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "containers": [
+          {
+            "name": "freelancer-app",
+            "properties": {
+              "image": "mcr.microsoft.com/azuredocs/aci-helloworld:latest",
+              "ports": [{"port": 80}],
+              "resources": {
+                "requests": {
+                  "cpu": 1,
+                  "memoryInGB": 1.5
+                }
+              }
+            }
+          }
+        ],
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [{"port": 80, "protocol": "TCP"}],
+          "dnsNameLabel": "[variables('dnsLabel')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "containerUrl": {
+      "type": "string",
+      "value": "[concat('http://', reference(resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))).ipAddress.fqdn)]"
+    }
+  }
+}
