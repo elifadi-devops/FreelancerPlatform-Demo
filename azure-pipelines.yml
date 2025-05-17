@@ -1,11 +1,13 @@
-trigger:
-- main
+trigger: none # Disable automatic runs
 
 pool:
   vmImage: 'ubuntu-latest'
+  demands: # Add this to limit resources
+  - agent.name -equals Demand1
 
 steps:
 - script: |
-    echo "Validating ARM templates..."
+    echo "Basic validation starting..."
+    echo "This will work without parallelism"
     az --version
   displayName: 'Validate setup'
