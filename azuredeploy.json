@@ -8,6 +8,20 @@
     }
   },
   "resources": [
+    {
+  "type": "Microsoft.Sql/servers/databases",
+  "apiVersion": "2022-05-01",
+  "name": "[concat('freelancer-sql', '/', 'FreelancerDB')]",
+  "location": "[parameters('location')]",
+  "properties": {},
+  "sku": {
+    "name": "Basic",
+    "tier": "Basic"
+  },
+  "dependsOn": [
+    "[resourceId('Microsoft.Sql/servers', 'freelancer-sql')]"
+  ]
+},
             {
       "type": "Microsoft.Web/serverfarms",
       "apiVersion": "2022-03-01",
