@@ -1,3 +1,4 @@
+# Freelancer Platform - Safe Validation Pipeline
 trigger:
 - main
 
@@ -6,6 +7,13 @@ pool:
 
 steps:
 - script: |
-    echo "Validating ARM templates..."
-    az --version
-  displayName: 'Validate setup'
+    echo "=== SAFE RESOURCE VALIDATION ==="
+    echo "Checking for configuration drift..."
+    az deployment group what-if \
+      --resource-group FreelancerPlatformRG \
+      --template-file azuredeploy.json \
+      --parameters location=northeurope
+    echo "Validation complete. No changes deployed."
+  displayName: 'Validate Infrastructure'
+  env:
+    AZURE_CREDENTIALS: $(AZURE_CREDENTIALS)
