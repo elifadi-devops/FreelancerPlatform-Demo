@@ -1,13 +1,12 @@
-trigger: none # Disable automatic runs
+trigger: none  # Disable automatic runs to save minutes
 
 pool:
   vmImage: 'ubuntu-latest'
-  demands: # Add this to limit resources
-  - agent.name -equals Demand1
+  demands:    # Forces free-tier compatibility
+  - Agent.Name -equals $(Agent.Name)
 
 steps:
 - script: |
-    echo "Basic validation starting..."
-    echo "This will work without parallelism"
+    echo "Running in free tier mode..."
     az --version
-  displayName: 'Validate setup'
+  displayName: 'Validate Setup'
