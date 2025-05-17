@@ -1,19 +1,23 @@
-# Freelancer Platform - Safe Validation Pipeline
 trigger:
 - main
 
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  azureServiceConnection: 'FreelancerPlatform-Azure' # Match service connection name
+
 steps:
-- script: |
-    echo "=== SAFE RESOURCE VALIDATION ==="
-    echo "Checking for configuration drift..."
-    az deployment group what-if \
-      --resource-group FreelancerPlatformRG \
-      --template-file azuredeploy.json \
-      --parameters location=northeurope
-    echo "Validation complete. No changes deployed."
+- task: AzureCLI@2
   displayName: 'Validate Infrastructure'
-  env:
-    AZURE_CREDENTIALS: $(AZURE_CREDENTIALS)
+  inputs:
+    azureSubscription: $(azureServiceConnection)
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: |
+      echo "=== SAFE VALIDATION ==="
+      az deployment group what-if \
+        --resource-group FreelancerPlatformRG \
+        --template-file azuredeploy.json \
+        --parameters location=northeurope
+      echo "Validation complete."
