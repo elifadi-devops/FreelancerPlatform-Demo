@@ -1,0 +1,11 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    echo "Validating ARM templates..."
+    az --version
+  displayName: 'Validate setup'
