@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "b2cTenantName": {
+      "value": "EliFadiProjectLernia"
+    },
+    "b2cDomainNamePrefix": {
+      "value": "EliFadiFreelancerB2C"
+    },
+    "countryCode": {
+      "value": "SE"
+    },
+    "location": {
+      "value": "North Europe"
+    },
+    "skuName": {
+      "value": "Standard" 
+    }
+  }
+}

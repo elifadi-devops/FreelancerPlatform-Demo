@@ -1,0 +1,72 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "b2cTenantName": {
+      "type": "string",
+      "metadata": {
+        "description": "The organization name for your B2C tenant, e.g., Contoso."
+      }
+    },
+    "b2cDomainNamePrefix": {
+      "type": "string",
+      "metadata": {
+        "description": "A unique prefix for the initial domain name, e.g., contosob2c. This will be part of <prefix>.onmicrosoft.com."
+      }
+    },
+    "countryCode": {
+      "type": "string",
+      "defaultValue": "SE",
+      "metadata": {
+        "description": "The country code for data residency, e.g., US, GB, SE. See Microsoft docs for valid codes."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "Europe",
+      "metadata": {
+        "description": "The Azure region for linking the B2C tenant for billing purposes. Pick a region close to you."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "PremiumP1",
+        "PremiumP2"
+      ],
+      "metadata": {
+        "description": "The SKU for the B2C tenant. 'Standard' offers a free tier for the first 50,000 MAUs."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.AzureActiveDirectory/b2cDirectories",
+      "apiVersion": "2021-04-01",
+      "name": "[concat(parameters('b2cDomainNamePrefix'), '.onmicrosoft.com')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "A0"
+      },
+      "properties": {
+        "createTenantProperties": {
+          "displayName": "[parameters('b2cTenantName')]",
+          "countryCode": "[parameters('countryCode')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "b2cTenantDomainName": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.AzureActiveDirectory/b2cDirectories', concat(parameters('b2cDomainNamePrefix'), '.onmicrosoft.com'))).tenantId]"
+    },
+    "b2cTenantResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.AzureActiveDirectory/b2cDirectories', concat(parameters('b2cDomainNamePrefix'), '.onmicrosoft.com'))]"
+    }
+  }
+}
